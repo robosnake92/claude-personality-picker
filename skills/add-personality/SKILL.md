@@ -50,7 +50,14 @@ this plugin's `SessionStart` hook.
 
 6. **Write the file** to `~/.claude/skills/personalities/personalities/<name>.md` once approved.
 
-7. Tell the user the personality is now in the rotation — no other setup needed, since the
+7. **Validate it**: run
+   ```
+   ~/.claude/skills/personalities/scripts/validate-personality.sh <name>
+   ```
+   If it reports `FAIL`, fix the listed issues in the file and re-run until it reports `OK` —
+   don't tell the user it's done until it passes.
+
+8. Tell the user the personality is now in the rotation — no other setup needed, since the
    plugin's hooks pick randomly from every `.md` file in that directory at session start.
 
 ## Notes

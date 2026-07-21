@@ -16,8 +16,14 @@ CLAUDE.md-based instruction that picked inconsistently and drifted out of charac
   switch to a named personality or reroll to a random one mid-session; updates the same state
   file so reinforcement picks up the change immediately.
 - **`/personalities:add-personality` skill** — interactively drafts a new personality file in the
-  same style as the existing ones and writes it to `personalities/`, where it's automatically
-  eligible for future random selection.
+  same style as the existing ones, validates it against the structural convention, and writes it
+  to `personalities/`, where it's automatically eligible for future random selection.
+- **`/personalities:list-personalities` skill** (`scripts/list-personalities.sh`) — prints every
+  personality currently in the rotation with its title and in-character name.
+- **`scripts/validate-personality.sh`** — checks a personality file (or all of them, if run with
+  no argument) against the structural convention: title header, name subheading, address-forms
+  bullet, caps-usage rule, emoji bullet, MUSIC bullet, closing memory/anecdote bullet. Run it any
+  time to audit the whole `personalities/` directory for drift.
 
 ## Layout
 
