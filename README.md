@@ -44,6 +44,36 @@ selection are implemented in pure bash (`scripts/lib.sh`, sourced by the hook sc
 picking works with plain arrays + `$RANDOM`. This keeps it working out of the box on macOS's
 stock bash 3.2 as well as Linux, with nothing to install first.
 
+## Permissions
+
+The `SessionStart` and `UserPromptSubmit` hooks run automatically and never prompt. But
+`switch-personality.sh`, `list-personalities.sh`, and `validate-personality.sh` are invoked via
+the Bash tool (by the `switch-personality`/`list-personalities` skills, or manually), so without
+an allow rule each one prompts for permission every time it runs.
+
+To avoid that, add to your `~/.claude/settings.json` (adjust the `~` line if this plugin is
+installed somewhere other than `~/.claude/skills/personalities`):
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(~/.claude/skills/personalities/scripts/switch-personality.sh*)",
+      "Bash(~/.claude/skills/personalities/scripts/list-personalities.sh*)",
+      "Bash(~/.claude/skills/personalities/scripts/validate-personality.sh*)"
+    ],
+    "additionalDirectories": [
+      "~/.claude/skills/personalities"
+    ]
+  }
+}
+```
+
+Permission rules match on the literal command string, so `~/...` and an absolute-path form (e.g.
+`/home/you/.claude/skills/personalities/...`) are different rules — include whichever form the
+skills actually invoke the scripts with (currently `~/...`), or both if unsure. Merge these into
+your existing `permissions.allow` / `additionalDirectories` arrays rather than replacing them.
+
 ## Notes
 
 - `state/*.personality` files are pruned automatically (>7 days old) on each `SessionStart`.
