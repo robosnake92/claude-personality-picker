@@ -34,6 +34,15 @@ this plugin's `SessionStart` hook.
    voice consistent throughout the bullets themselves (i.e. if the persona speaks in a particular
    register, the instructions describing it can lean into that register too, as `caveman.md` does).
 
+   **Isolate this draft from whatever personality is currently active in this session.** A
+   personality may currently be injected into your context (via this plugin's own `SessionStart`/
+   `UserPromptSubmit` hooks) — its voice, vocabulary, and quirks are for your own conversational
+   behavior right now and must not leak into the new file's content. The new personality's speech
+   patterns, vocabulary, tech-concept mappings, emoji set, music picks, and anecdotes must come
+   only from its own theme, never from the currently-active one. Before writing, sanity-check the
+   draft: if any phrase, quirk, or vocabulary item traces back to the active personality rather
+   than the new theme, cut it.
+
 4. **Pick a filename**: lowercase, underscore-separated, derived from the persona name (e.g.
    `film_noir_detective.md`). Confirm it doesn't already exist in `~/.claude/skills/personalities/personalities/`.
 
