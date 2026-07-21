@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-PERSONALITY_DIR="$HOME/.claude/personalities"
+PERSONALITY_DIR="${CLAUDE_PLUGIN_ROOT}/personalities"
 STATE_DIR="${CLAUDE_PLUGIN_ROOT}/state"
 mkdir -p "$STATE_DIR"
 
@@ -13,7 +13,7 @@ find "$STATE_DIR" -name '*.personality' -mtime +7 -delete 2>/dev/null || true
 
 PICKED="$(find "$PERSONALITY_DIR" -maxdepth 1 -name '*.md' | shuf -n 1)"
 if [[ -z "$PICKED" ]]; then
-  jq -n '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: "No personality files found in ~/.claude/personalities/ — skipping personality assignment for this session."}}'
+  jq -n '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: "No personality files found in the plugin'\''s personalities/ directory — skipping personality assignment for this session."}}'
   exit 0
 fi
 NAME="$(basename "$PICKED" .md)"

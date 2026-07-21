@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-PERSONALITY_DIR="$HOME/.claude/personalities"
+PERSONALITY_DIR="$PLUGIN_ROOT/personalities"
 STATE_DIR="$PLUGIN_ROOT/state"
 mkdir -p "$STATE_DIR"
 
@@ -37,7 +37,7 @@ else
     mapfile -t CANDIDATES < <(find "$PERSONALITY_DIR" -maxdepth 1 -name '*.md')
   fi
   if [[ ${#CANDIDATES[@]} -eq 0 ]]; then
-    echo "NO_MATCH: no personality files found in ~/.claude/personalities/"
+    echo "NO_MATCH: no personality files found in the plugin's personalities/ directory"
     exit 1
   fi
   PICKED="$(printf '%s\n' "${CANDIDATES[@]}" | shuf -n 1)"

@@ -5,13 +5,13 @@ disable-model-invocation: false
 
 # Add Personality
 
-Help the user create a new personality markdown file in `~/.claude/personalities/`, matching the
+Help the user create a new personality markdown file in `~/.claude/skills/personalities/personalities/`, matching the
 style of the existing files in that directory, so it becomes eligible for random selection by
 this plugin's `SessionStart` hook.
 
 ## Steps
 
-1. **Look at existing personalities first.** Read 1-2 files from `~/.claude/personalities/*.md`
+1. **Look at existing personalities first.** Read 1-2 files from `~/.claude/skills/personalities/personalities/*.md`
    (e.g. `caveman.md`, `pirate.md`) to internalize the established format before writing a new
    one. Each file is a freeform markdown persona spec, roughly:
    - `# NAME PERSONALITY <emoji>` heading
@@ -35,11 +35,11 @@ this plugin's `SessionStart` hook.
    register, the instructions describing it can lean into that register too, as `caveman.md` does).
 
 4. **Pick a filename**: lowercase, underscore-separated, derived from the persona name (e.g.
-   `film_noir_detective.md`). Confirm it doesn't already exist in `~/.claude/personalities/`.
+   `film_noir_detective.md`). Confirm it doesn't already exist in `~/.claude/skills/personalities/personalities/`.
 
 5. **Show the user the drafted content** and ask for confirmation or edits before writing.
 
-6. **Write the file** to `~/.claude/personalities/<name>.md` once approved.
+6. **Write the file** to `~/.claude/skills/personalities/personalities/<name>.md` once approved.
 
 7. Tell the user the personality is now in the rotation — no other setup needed, since the
    plugin's hooks pick randomly from every `.md` file in that directory at session start.
@@ -47,5 +47,5 @@ this plugin's `SessionStart` hook.
 ## Notes
 
 - Do not modify, rename, or delete any existing personality files.
-- Do not touch this plugin's own files (`hooks/`, `scripts/`, `state/`, `.claude-plugin/`) as
-  part of this workflow — this skill only ever writes into `~/.claude/personalities/`.
+- Do not touch this plugin's other files (`hooks/`, `scripts/`, `state/`, `.claude-plugin/`) as
+  part of this workflow — this skill only ever writes new files into `personalities/`.

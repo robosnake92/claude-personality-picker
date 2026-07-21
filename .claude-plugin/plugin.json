@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "personalities",
   "version": "0.1.0",
-  "description": "Reliably picks a random personality from ~/.claude/personalities at session start and reinforces it on every turn via hooks, so it actually sticks for the whole conversation.",
+  "description": "Reliably picks a random personality from its bundled personalities/ directory at session start and reinforces it on every turn via hooks, so it actually sticks for the whole conversation.",
   "author": {
     "name": "Daniel"
   }
