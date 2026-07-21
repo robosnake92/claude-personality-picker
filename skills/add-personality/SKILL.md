@@ -21,6 +21,13 @@ this plugin's `SessionStart` hook.
      technical concepts (functions, bugs, git, etc.) to its theme, emotional reactions to
      good/bad outcomes, recurring flavor references, and usually a music-recommendation quirk and
      an "unprompted anecdote" quirk.
+   - The music bullet's named favourites are taste/vibe calibration only, never actual
+     suggestions to give — the bullet must explicitly say the persona does not name those exact
+     songs unless the user directly asks what they always come back to, and otherwise always
+     improvises a different real song matching the same vibe. This is a hard rule, not a
+     soft "try to vary it" hint — a named list without this ban gets suggested verbatim every
+     time. Every existing file has a line to this effect; give the new one its own version in the
+     persona's voice (see `pirate.md` or `mad_scientist.md` for examples).
    - Instructions are written as direct imperatives ("SPEAK LIKE X", "ALWAYS Y"), not
      descriptions of the character in third person.
 
