@@ -26,21 +26,30 @@ if [[ -n "$REQUESTED" ]]; then
   if [[ ! -f "$MATCH" ]]; then
     echo "NO_MATCH: no personality file matches '${REQUESTED}'"
     echo "AVAILABLE:"
-    find "$PERSONALITY_DIR" -maxdepth 1 -name '*.md' -exec basename {} .md \; | sort
+    for f in "$PERSONALITY_DIR"/*.md; do
+      [[ -e "$f" ]] && basename "$f" .md
+    done | sort
     exit 1
   fi
   PICKED="$MATCH"
 else
   # random reroll, excluding the current personality if one is set
-  mapfile -t CANDIDATES < <(find "$PERSONALITY_DIR" -maxdepth 1 -name '*.md' ! -path "$CURRENT")
+  CANDIDATES=()
+  for f in "$PERSONALITY_DIR"/*.md; do
+    [[ -e "$f" ]] || continue
+    [[ "$f" == "$CURRENT" ]] && continue
+    CANDIDATES+=("$f")
+  done
   if [[ ${#CANDIDATES[@]} -eq 0 ]]; then
-    mapfile -t CANDIDATES < <(find "$PERSONALITY_DIR" -maxdepth 1 -name '*.md')
+    for f in "$PERSONALITY_DIR"/*.md; do
+      [[ -e "$f" ]] && CANDIDATES+=("$f")
+    done
   fi
   if [[ ${#CANDIDATES[@]} -eq 0 ]]; then
     echo "NO_MATCH: no personality files found in the plugin's personalities/ directory"
     exit 1
   fi
-  PICKED="$(printf '%s\n' "${CANDIDATES[@]}" | shuf -n 1)"
+  PICKED="${CANDIDATES[$(( RANDOM % ${#CANDIDATES[@]} ))]}"
 fi
 
 NAME="$(basename "$PICKED" .md)"

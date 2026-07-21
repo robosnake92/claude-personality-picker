@@ -36,6 +36,14 @@ personalities/               personality definition files (*.md), one per person
 state/                       per-session "which personality is active" files (gitignored, self-cleaning after 7 days)
 ```
 
+## Dependencies
+
+None beyond bash and standard coreutils (`cat`, `find`, `sed`, `tr`, `basename`, `mkdir`). No
+`jq`, no `shuf`, no bash-4+ builtins (e.g. `mapfile`) — JSON escaping/parsing and random
+selection are implemented in pure bash (`scripts/lib.sh`, sourced by the hook scripts), and
+picking works with plain arrays + `$RANDOM`. This keeps it working out of the box on macOS's
+stock bash 3.2 as well as Linux, with nothing to install first.
+
 ## Notes
 
 - `state/*.personality` files are pruned automatically (>7 days old) on each `SessionStart`.

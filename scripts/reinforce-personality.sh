@@ -1,15 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
 STATE_DIR="${CLAUDE_PLUGIN_ROOT}/state"
 
 INPUT="$(cat)"
-SESSION_ID="$(echo "$INPUT" | jq -r '.session_id')"
+SESSION_ID="$(json_field "$INPUT" session_id)"
 STATE_FILE="$STATE_DIR/${SESSION_ID}.personality"
 
 if [[ ! -f "$STATE_FILE" ]]; then
-  # No personality recorded for this session (e.g. hook added mid-session).
-  # Say nothing rather than guessing.
   echo '{}'
   exit 0
 fi
@@ -27,5 +28,5 @@ REMINDER="Reminder: you are still in character as the '${NAME}' personality assi
 
 ${CONTENT}"
 
-jq -n --arg ctx "$REMINDER" \
-  '{hookSpecificOutput: {hookEventName: "UserPromptSubmit", additionalContext: $ctx}}'
+ESCAPED="$(json_escape "$REMINDER")"
+printf '{"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": "%s"}}\n' "$ESCAPED"

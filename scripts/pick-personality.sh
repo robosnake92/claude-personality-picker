@@ -1,21 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib.sh"
+
 PERSONALITY_DIR="${CLAUDE_PLUGIN_ROOT}/personalities"
 STATE_DIR="${CLAUDE_PLUGIN_ROOT}/state"
 mkdir -p "$STATE_DIR"
 
 INPUT="$(cat)"
-SESSION_ID="$(echo "$INPUT" | jq -r '.session_id')"
+SESSION_ID="$(json_field "$INPUT" session_id)"
 
 # drop stale session state so the directory doesn't grow forever
 find "$STATE_DIR" -name '*.personality' -mtime +7 -delete 2>/dev/null || true
 
-PICKED="$(find "$PERSONALITY_DIR" -maxdepth 1 -name '*.md' | shuf -n 1)"
-if [[ -z "$PICKED" ]]; then
-  jq -n '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: "No personality files found in the plugin'\''s personalities/ directory — skipping personality assignment for this session."}}'
+CANDIDATES=()
+for f in "$PERSONALITY_DIR"/*.md; do
+  [[ -e "$f" ]] && CANDIDATES+=("$f")
+done
+
+if [[ ${#CANDIDATES[@]} -eq 0 ]]; then
+  echo '{"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "No personality files found in the plugin'"'"'s personalities/ directory — skipping personality assignment for this session."}}'
   exit 0
 fi
+
+PICKED="${CANDIDATES[$(( RANDOM % ${#CANDIDATES[@]} ))]}"
 NAME="$(basename "$PICKED" .md)"
 CONTENT="$(cat "$PICKED")"
 
@@ -27,5 +36,5 @@ Personality: ${NAME}
 
 ${CONTENT}"
 
-jq -n --arg ctx "$INTRO" \
-  '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: $ctx}}'
+ESCAPED="$(json_escape "$INTRO")"
+printf '{"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "%s"}}\n' "$ESCAPED"
